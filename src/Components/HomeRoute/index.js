@@ -20,9 +20,11 @@ class HomeRoute extends Component {
 
   onSubmitEvent = event => {
     event.preventDefault()
-    const {inputText, selectedOption} = this.state
-    const updatedOption = selectedOption.slice(1).toLocaleLowerCase()
-    const optionSelected = selectedOption[0] + updatedOption
+    const {inputText, selectedOption, optionsList} = this.state
+    const selectedTag = optionsList.find(tag => tag.optionId === selectedOption)
+    const optionSelected = selectedTag
+      ? selectedTag.displayText
+      : selectedOption
     const newTask = {
       id: uuidV4(),
       inputText,
@@ -32,6 +34,7 @@ class HomeRoute extends Component {
       tasksList: [...prevState.tasksList, newTask],
       originalList: [...prevState.originalList, newTask],
       inputText: '',
+      selectedOption: 'Health',
     }))
   }
 
@@ -89,6 +92,7 @@ class HomeRoute extends Component {
               id="input-select"
               className="input-dropdown"
               onChange={this.onSelectEvent}
+              value={selectedOption}
             >
               {optionsList.map(eachItem => (
                 <option key={eachItem.optionId} value={eachItem.optionId}>
@@ -135,16 +139,14 @@ class HomeRoute extends Component {
           <h1 className="Right-head">Tasks</h1>{' '}
           {tasksList.length !== 0 && (
             <ul className="Task-container">
-              <p>
-                {tasksList.map(eachItem => (
-                  <li className="Task-items" key={eachItem.id}>
-                    <p className="Task-para">{eachItem.inputText}</p>
-                    <button type="button" className="Task-button">
-                      <p>{eachItem.optionSelected}</p>
-                    </button>
-                  </li>
-                ))}
-              </p>
+              {tasksList.map(eachItem => (
+                <li className="Task-items" key={eachItem.id}>
+                  <p className="Task-para">{eachItem.inputText}</p>
+                  <button type="button" className="Task-button">
+                    <p>{eachItem.optionSelected}</p>
+                  </button>
+                </li>
+              ))}
             </ul>
           )}
           {tasksList.length === 0 && (
